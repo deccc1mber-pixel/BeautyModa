@@ -3,182 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Serevko Beauty</title>
+    <title>Serevko Beauty App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Базовые стили и сброс */
+        :root {
+            --primary-color: #D5A3A3;
+            --bg-color: #FAFAFA;
+            --text-main: #333;
+            --text-gray: #888;
+            --white: #ffffff;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
-        body { background-color: #FAFAFA; color: #333; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; }
+
+        /* Анимация переключения вкладок */
+        .page { display: none; padding-bottom: 100px; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Общие стили секций */
+        .header-bg {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.7), var(--bg-color)), 
+                        url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80') center/cover;
+            padding: 50px 20px 30px; text-align: left;
+        }
+        .header-bg h1 { letter-spacing: 5px; font-weight: 300; font-size: 32px; }
         
-        /* Шапка с фоном */
-        .header {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,1)), url('https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=800&q=80') center/cover;
-            padding: 40px 20px 20px;
-            position: relative;
-        }
-        .header h1 { font-weight: 300; letter-spacing: 2px; font-size: 28px; }
-        .header h2 { font-weight: 300; letter-spacing: 4px; font-size: 14px; color: #666; margin-top: 5px; }
-        .header p { font-size: 12px; color: #888; margin-top: 10px; }
-        .bell-icon {
-            position: absolute; top: 40px; right: 20px;
-            background: rgba(255,255,255,0.8); padding: 10px; border-radius: 50%;
-        }
+        .container { padding: 0 20px; }
+        h2.section-title { font-size: 22px; margin: 20px 0 15px; font-weight: 500; }
 
-        /* Основной контент */
-        .content { padding: 0 20px 80px; }
-
-        /* Карточка промо (скидка) */
-        .promo-card {
-            background: #fff; border-radius: 16px; padding: 20px;
+        /* --- ВКЛАДКА ГЛАВНАЯ --- */
+        .promo-banner {
+            background: var(--white); border-radius: 20px; padding: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-top: -20px; position: relative; z-index: 10;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: -30px;
         }
-        .promo-text h3 { font-size: 16px; font-weight: 500; }
-        .promo-text p { font-size: 12px; color: #888; margin-top: 5px; }
-        .btn-primary {
-            background: #D5A3A3; color: white; border: none; padding: 10px 20px;
-            border-radius: 12px; font-size: 14px; cursor: pointer;
+        .btn-book { background: var(--primary-color); color: var(--white); border: none; padding: 12px 24px; border-radius: 12px; font-weight: 500; cursor: pointer; }
+
+        /* --- ВКЛАДКА УСЛУГИ --- */
+        .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .service-card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .service-card img { width: 100%; height: 120px; object-fit: cover; }
+        .service-info { padding: 10px; text-align: center; }
+        .service-info p { font-size: 14px; font-weight: 500; }
+        .service-info span { color: var(--primary-color); font-size: 13px; }
+
+        /* --- ВКЛАДКА ЗАПИСЬ --- */
+        .booking-form { background: var(--white); padding: 20px; border-radius: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; }
+        .form-group select, .form-group input { 
+            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; outline: none; font-size: 14px;
         }
 
-        /* Секция услуг */
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 15px; }
-        .section-header h3 { font-size: 20px; font-weight: 500; }
-        .section-header a { font-size: 14px; color: #888; text-decoration: none; }
-        
-        .services-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .services-scroll::-webkit-scrollbar { display: none; }
-        .service-item { min-width: 120px; background: #fff; border-radius: 12px; overflow: hidden; padding-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .service-item img { width: 100%; height: 120px; object-fit: cover; }
-        .service-item p { font-size: 12px; padding: 10px 10px 0; text-align: center; }
-
-        /* Карточка "Приведи подругу" */
-        .referral-card {
-            background: linear-gradient(135deg, #F3E5E5, #EAD5D5); border-radius: 16px;
-            padding: 20px; margin-top: 20px; display: flex; justify-content: space-between;
+        /* --- ВКЛАДКА ПРОФИЛЬ --- */
+        .profile-info { text-align: center; padding-top: 20px; }
+        .avatar { width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .profile-menu { margin-top: 30px; }
+        .menu-item { 
+            background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .referral-card h3 { font-size: 16px; font-weight: 500; margin-bottom: 10px; }
-        .referral-card p { font-size: 12px; color: #666; }
 
-        /* Мои записи */
-        .appointment-card {
-            background: #fff; border-radius: 16px; padding: 15px;
-            display: flex; align-items: center; border: 1px solid #eee; margin-top: 10px;
+        /* Навигация */
+        .nav-bar {
+            position: fixed; bottom: 0; width: 100%; background: var(--white);
+            display: flex; justify-content: space-around; padding: 15px 0 25px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
         }
-        .app-date { border-right: 1px solid #eee; padding-right: 15px; text-align: center; }
-        .app-date h2 { font-size: 24px; font-weight: 400; }
-        .app-date p { font-size: 12px; color: #888; }
-        .app-details { padding-left: 15px; flex-grow: 1; }
-        .app-details h4 { font-size: 14px; font-weight: 500; margin-bottom: 5px; }
-        .app-details p { font-size: 12px; color: #888; margin-bottom: 5px; }
-        .badge { background: #E5F5E9; color: #32A05F; padding: 4px 8px; border-radius: 6px; font-size: 10px; display: inline-block; }
-
-        /* Нижняя навигация */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #fff;
-            display: flex; justify-content: space-around; padding: 10px 0 20px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
-        }
-        .nav-item { text-align: center; color: #aaa; font-size: 10px; cursor: pointer; }
-        .nav-item.active { color: #D5A3A3; }
-        .nav-icon { font-size: 20px; margin-bottom: 4px; display: block; }
+        .nav-btn { text-align: center; color: #ccc; font-size: 10px; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-btn.active { color: var(--primary-color); }
+        .nav-btn i { display: block; font-size: 22px; margin-bottom: 4px; font-style: normal; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="bell-icon">🔔</div>
-        <h1>SEREVKO</h1>
-        <h2>BEAUTY</h2>
-        <p>Твоя красота — наша работа</p>
-    </div>
-
-    <div class="content">
-        <div class="promo-card">
-            <div class="promo-text">
-                <h3>-10% на первое посещение</h3>
-                <p>Для новых клиентов</p>
-            </div>
-            <button class="btn-primary" onclick="bookAppointment()">Записаться</button>
+    <div id="home" class="page active">
+        <div class="header-bg">
+            <h1>SEREVKO</h1>
+            <p style="letter-spacing: 2px; color: var(--text-gray)">BEAUTY SALON</p>
         </div>
-
-        <div class="section-header">
-            <h3>Услуги</h3>
-            <a href="#">Все услуги ></a>
-        </div>
-        <div class="services-scroll">
-            <div class="service-item">
-                <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=300&q=80" alt="Косметология">
-                <p>Косметология</p>
+        <div class="container">
+            <div class="promo-banner">
+                <div>
+                    <h3 style="font-size: 16px;">Скидка -10%</h3>
+                    <p style="font-size: 12px; color: var(--text-gray)">На первый визит</p>
+                </div>
+                <button class="btn-book" onclick="showPage('booking')">Записаться</button>
             </div>
-            <div class="service-item">
-                <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=300&q=80" alt="Волосы">
-                <p>Парикмахерские<br>услуги</p>
+            
+            <h2 class="section-title">Популярное</h2>
+            <div class="services-grid">
+                <div class="service-card" onclick="selectService('Маникюр', 1500)">
+                    <img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=300&q=80">
+                    <div class="service-info"><p>Маникюр</p><span>от 1500₽</span></div>
+                </div>
+                <div class="service-card" onclick="selectService('Укладка', 2000)">
+                    <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=300&q=80">
+                    <div class="service-info"><p>Укладка</p><span>от 2000₽</span></div>
+                </div>
             </div>
-            <div class="service-item">
-                <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=300&q=80" alt="Ногти">
-                <p>Ногтевой<br>сервис</p>
-            </div>
-            <div class="service-item">
-                <img src="https://images.unsplash.com/photo-1512496015851-a1fbbfc6d43e?auto=format&fit=crop&w=300&q=80" alt="Брови">
-                <p>Брови и<br>ресницы</p>
-            </div>
-        </div>
-
-        <div class="referral-card">
-            <div>
-                <h3>Приведи подругу<br>и получите бонусы</h3>
-                <p>Подробнее</p>
-            </div>
-            <div style="font-size: 40px;">🎁</div>
-        </div>
-
-        <div class="section-header">
-            <h3>Мои записи</h3>
-            <a href="#">Все записи ></a>
-        </div>
-        <div class="appointment-card">
-            <div class="app-date">
-                <h2>25</h2>
-                <p>мая</p>
-            </div>
-            <div class="app-details">
-                <h4>15:00 • Маникюр + покрытие</h4>
-                <p>Мастер: Анна</p>
-                <div class="badge">Подтверждена</div>
-            </div>
-            <div style="color: #aaa;">></div>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active"><span class="nav-icon">🏠</span>Главная</div>
-        <div class="nav-item"><span class="nav-icon">🗂</span>Услуги</div>
-        <div class="nav-item"><span class="nav-icon">📅</span>Запись</div>
-        <div class="nav-item"><span class="nav-icon">👤</span>Профиль</div>
-        <div class="nav-item"><span class="nav-icon">⋯</span>Ещё</div>
+    <div id="services" class="page">
+        <div class="container">
+            <h2 class="section-title">Все услуги</h2>
+            <div class="services-grid">
+                <div class="service-card" onclick="selectService('Косметология', 3500)">
+                    <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=300&q=80">
+                    <div class="service-info"><p>Косметология</p><span>от 3500₽</span></div>
+                </div>
+                <div class="service-card" onclick="selectService('Брови', 1200)">
+                    <img src="https://images.unsplash.com/photo-1512496015851-a1fbbfc6d43e?auto=format&fit=crop&w=300&q=80">
+                    <div class="service-info"><p>Брови</p><span>от 1200₽</span></div>
+                </div>
+                <div class="service-card" onclick="selectService('Педикюр', 2200)">
+                    <img src="https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=300&q=80">
+                    <div class="service-info"><p>Педикюр</p><span>от 2200₽</span></div>
+                </div>
+                <div class="service-card" onclick="selectService('Макияж', 3000)">
+                    <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=300&q=80">
+                    <div class="service-info"><p>Макияж</p><span>от 3000₽</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="booking" class="page">
+        <div class="container">
+            <h2 class="section-title">Онлайн запись</h2>
+            <div class="booking-form">
+                <div class="form-group">
+                    <label>Выберите услугу</label>
+                    <select id="book-service">
+                        <option value="Маникюр">Маникюр</option>
+                        <option value="Укладка">Укладка</option>
+                        <option value="Косметология">Косметология</option>
+                        <option value="Брови">Брови</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Мастер</label>
+                    <select id="book-master">
+                        <option value="Анна">Анна (Топ-мастер)</option>
+                        <option value="Мария">Мария</option>
+                        <option value="Елена">Елена</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Дата и время</label>
+                    <input type="datetime-local" id="book-time">
+                </div>
+                <button class="btn-book" style="width: 100%; margin-top: 10px;" onclick="confirmBooking()">Подтвердить запись</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile" class="page">
+        <div class="container">
+            <div class="profile-info">
+                <div class="avatar" id="user-avatar">👤</div>
+                <h3 id="user-name">Клиент</h3>
+                <p id="user-id" style="color: var(--text-gray); font-size: 12px;">ID: 000000</p>
+            </div>
+            <div class="profile-menu">
+                <div class="menu-item"><span>🎁 Мои бонусы</span><span style="color: var(--primary-color)">500 Б</span></div>
+                <div class="menu-item"><span>📅 История визитов</span><span>></span></div>
+                <div class="menu-item"><span>⚙️ Настройки</span><span>></span></div>
+                <div class="menu-item" style="color: #e74c3c;"><span>Выйти</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-btn active" onclick="showPage('home', this)"><i>🏠</i>Главная</div>
+        <div class="nav-btn" onclick="showPage('services', this)"><i>🗂</i>Услуги</div>
+        <div class="nav-btn" onclick="showPage('booking', this)"><i>📅</i>Запись</div>
+        <div class="nav-btn" onclick="showPage('profile', this)"><i>👤</i>Профиль</div>
     </div>
 
     <script>
-        // Инициализация Telegram Web App
-        let tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем на весь экран
-
-        // Настраиваем цвета темы под Telegram
-        tg.MainButton.textColor = '#FFFFFF';
-        tg.MainButton.color = '#D5A3A3'; 
-
-        // Функция при нажатии на кнопку "Записаться"
-        function bookAppointment() {
-            // Отправляем данные обратно боту
-            tg.sendData("action_book_new"); 
-            // Либо можно включить главную кнопку Telegram внизу
-            tg.MainButton.setText("Продолжить запись");
-            tg.MainButton.show();
-        }
-
-        Telegram.WebApp.onEvent('mainButtonClicked', function() {
-            tg.sendData("continue_booking");
+        // Инициализация
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready(); // Сообщаем Telegram, что приложение готово
+    
+        // Ждем полной загрузки документа, прежде чем вешать события
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("App loaded and ready");
+            
+            // Показываем данные юзера
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                document.getElementById('user-name').innerText = user.first_name || "Клиент";
+                document.getElementById('user-id').innerText = "ID: " + (user.id || "000000");
+            }
         });
+    
+        function showPage(pageId, btn) {
+            // Скрываем все страницы
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('active');
+            });
+    
+            // Показываем нужную
+            const activePage = document.getElementById(pageId);
+            if (activePage) {
+                activePage.style.display = 'block';
+                activePage.classList.add('active');
+            }
+    
+            // Обновляем кнопки навигации
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if (btn) {
+                btn.classList.add('active');
+            } else {
+                // Ручная подсветка, если переход программный
+                const navButtons = document.querySelectorAll('.nav-btn');
+                const map = { 'home': 0, 'services': 1, 'booking': 2, 'profile': 3 };
+                if (navButtons[map[pageId]]) navButtons[map[pageId]].classList.add('active');
+            }
+            window.scrollTo(0, 0);
+        }
+    
+        function selectService(name, price) {
+            const serviceSelect = document.getElementById('book-service');
+            if (serviceSelect) {
+                serviceSelect.value = name;
+            }
+            showPage('booking');
+        }
+    
+        function confirmBooking() {
+            const service = document.getElementById('book-service').value;
+            const master = document.getElementById('book-master').value;
+            const time = document.getElementById('book-time').value;
+    
+            if (!time) {
+                tg.showAlert("Пожалуйста, выберите дату и время!"); // Красивое окно ТГ вместо alert
+                return;
+            }
+    
+            const data = {
+                action: "new_booking",
+                service: service,
+                master: master,
+                time: time
+            };
+    
+            // ВАЖНО: sendData закроет Mini App и отправит текст боту
+            tg.sendData(JSON.stringify(data));
+        }
     </script>
+     
 </body>
 </html>

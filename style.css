@@ -1,0 +1,7 @@
+.page { 
+    display: none; /* По умолчанию всё скрыто */
+    padding-bottom: 100px; 
+}
+.page.active { 
+    display: block; /* Показываем только активную */
+}

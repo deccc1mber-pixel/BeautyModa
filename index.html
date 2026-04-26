@@ -116,8 +116,11 @@
                     <div class="service-info"><p>Косметология</p><span>от 3500₽</span></div>
                 </div>
                 <div class="service-card" onclick="selectService('Брови', 1200)">
-                    <img src="brows.jpg" alt="Брови">
-                    <div class="service-info"><p>Брови</p><span>от 1200₽</span></div>
+                    <img src="https://m.salon-paradis.by/content/brows-lami-pmu/eyebrows/brow-master.jpg" alt="Брови" style="object-fit: cover;">
+                    <div class="service-info">
+                        <p>Брови</p>
+                        <span>от 1200₽</span>
+                    </div>
                 </div>
                 <div class="service-card" onclick="selectService('Педикюр', 2200)">
                     <img src="https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=300&q=80">
@@ -185,79 +188,136 @@
     </div>
 
     <script>
-        // Инициализация
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready(); // Сообщаем Telegram, что приложение готово
+   // 1. Инициализация Telegram WebApp
+const tg = window.Telegram.WebApp;
+
+// Сообщаем Telegram, что приложение готово и его можно показывать
+tg.ready();
+// Разворачиваем на максимум
+tg.expand();
+
+// Устанавливаем цвета основной кнопки (опционально)
+tg.MainButton.setParams({
+    text_color: '#ffffff',
+    color: '#D5A3A3'
+});
+
+// 2. Ждем загрузки интерфейса (DOM)
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Serevko App initialized");
     
-        // Ждем полной загрузки документа, прежде чем вешать события
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("App loaded and ready");
-            
-            // Показываем данные юзера
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                const user = tg.initDataUnsafe.user;
-                document.getElementById('user-name').innerText = user.first_name || "Клиент";
-                document.getElementById('user-id').innerText = "ID: " + (user.id || "000000");
-            }
-        });
-    
-        function showPage(pageId, btn) {
-            // Скрываем все страницы
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(p => {
-                p.style.display = 'none';
-                p.classList.remove('active');
-            });
-    
-            // Показываем нужную
-            const activePage = document.getElementById(pageId);
-            if (activePage) {
-                activePage.style.display = 'block';
-                activePage.classList.add('active');
-            }
-    
-            // Обновляем кнопки навигации
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            if (btn) {
-                btn.classList.add('active');
-            } else {
-                // Ручная подсветка, если переход программный
-                const navButtons = document.querySelectorAll('.nav-btn');
-                const map = { 'home': 0, 'services': 1, 'booking': 2, 'profile': 3 };
-                if (navButtons[map[pageId]]) navButtons[map[pageId]].classList.add('active');
-            }
-            window.scrollTo(0, 0);
+    // Подтягиваем данные пользователя из Telegram
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const user = tg.initDataUnsafe.user;
+        const userNameElem = document.getElementById('user-name');
+        const userIdElem = document.getElementById('user-id');
+        const userAvatarElem = document.getElementById('user-avatar');
+
+        if (userNameElem) userNameElem.innerText = user.first_name || "Клиент";
+        if (userIdElem) userIdElem.innerText = "ID: " + (user.id || "000000");
+        
+        // Если у пользователя есть фото в ТГ, пробуем отобразить
+        if (user.photo_url && userAvatarElem) {
+            userAvatarElem.innerHTML = `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
         }
+    }
+});
+
+/**
+ * 3. Функция переключения вкладок (SPA логика)
+ * @param {string} pageId - ID блока страницы (home, services, booking, profile)
+ * @param {HTMLElement} btn - Элемент кнопки навигации (необязательно)
+ */
+function showPage(pageId, btn) {
+    // Скрываем все страницы
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => {
+        p.style.display = 'none';
+        p.classList.remove('active');
+    });
+
+    // Показываем выбранную страницу
+    const activePage = document.getElementById(pageId);
+    if (activePage) {
+        activePage.style.display = 'block';
+        // Небольшая задержка для запуска CSS-анимации fadeIn
+        setTimeout(() => activePage.classList.add('active'), 10);
+    }
+
+    // Снимаем активный класс со всех кнопок меню
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     
-        function selectService(name, price) {
-            const serviceSelect = document.getElementById('book-service');
-            if (serviceSelect) {
-                serviceSelect.value = name;
-            }
-            showPage('booking');
+    // Подсвечиваем нужную кнопку
+    if (btn) {
+        // Если нажали на кнопку напрямую
+        btn.classList.add('active');
+    } else {
+        // Если перешли программно (например, кликнули на услугу)
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pageIndexMap = { 'home': 0, 'services': 1, 'booking': 2, 'profile': 3 };
+        const index = pageIndexMap[pageId];
+        if (navButtons[index]) {
+            navButtons[index].classList.add('active');
         }
-    
-        function confirmBooking() {
-            const service = document.getElementById('book-service').value;
-            const master = document.getElementById('book-master').value;
-            const time = document.getElementById('book-time').value;
-    
-            if (!time) {
-                tg.showAlert("Пожалуйста, выберите дату и время!"); // Красивое окно ТГ вместо alert
-                return;
-            }
-    
-            const data = {
-                action: "new_booking",
-                service: service,
-                master: master,
-                time: time
-            };
-    
-            // ВАЖНО: sendData закроет Mini App и отправит текст боту
-            tg.sendData(JSON.stringify(data));
-        }
+    }
+
+    // Всегда прокручиваем вверх при смене вкладки
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * 4. Функция выбора конкретной услуги
+ */
+function selectService(name, price) {
+    const serviceSelect = document.getElementById('book-service');
+    if (serviceSelect) {
+        serviceSelect.value = name;
+    }
+    // Перекидываем пользователя на страницу бронирования
+    showPage('booking');
+}
+
+/**
+ * 5. Логика подтверждения записи
+ */
+function confirmBooking() {
+    const service = document.getElementById('book-service').value;
+    const master = document.getElementById('book-master').value;
+    const timeInput = document.getElementById('book-time');
+    const time = timeInput.value;
+
+    // Валидация: если время не выбрано
+    if (!time) {
+        // Вызываем системное окно Telegram
+        tg.showAlert("Пожалуйста, выберите удобную дату и время!");
+        return;
+    }
+
+    // Собираем данные в объект
+    const resultData = {
+        action: "new_booking",
+        service: service,
+        master: master,
+        time: time,
+        user_id: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "unknown"
+    };
+
+    // Отправляем данные боту (это закроет Mini App)
+    // ВНИМАНИЕ: Работает только если бот запущен через KeyboardButton
+    try {
+        tg.sendData(JSON.stringify(resultData));
+    } catch (error) {
+        console.error("Ошибка sendData:", error);
+        tg.showAlert("Произошла ошибка при отправке данных боту.");
+    }
+}
+
+// Вибрация при кликах (для ощущения "нативного" приложения)
+document.querySelectorAll('.nav-btn, .btn-book, .service-card').forEach(item => {
+    item.addEventListener('click', () => {
+        tg.HapticFeedback.impactOccurred('light');
+    });
+});
     </script>
      
 </body>

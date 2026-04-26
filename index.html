@@ -15,66 +15,63 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; }
+        body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* Анимация переключения вкладок */
-        .page { display: none; padding-bottom: 100px; animation: fadeIn 0.3s ease; }
+        /* Анимация страниц */
+        .page { display: none; padding-bottom: 120px; animation: fadeIn 0.3s ease; min-height: 100vh; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Общие стили секций */
+        /* Шапка */
         .header-bg {
             background: linear-gradient(to bottom, rgba(255,255,255,0.7), var(--bg-color)), 
                         url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80') center/cover;
             padding: 50px 20px 30px; text-align: left;
         }
-        .header-bg h1 { letter-spacing: 5px; font-weight: 300; font-size: 32px; }
+        .header-bg h1 { letter-spacing: 5px; font-weight: 300; font-size: 32px; text-transform: uppercase; }
         
         .container { padding: 0 20px; }
         h2.section-title { font-size: 22px; margin: 20px 0 15px; font-weight: 500; }
 
-        /* --- ВКЛАДКА ГЛАВНАЯ --- */
+        /* Баннер на главной */
         .promo-banner {
             background: var(--white); border-radius: 20px; padding: 20px;
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: -30px;
         }
-        .btn-book { background: var(--primary-color); color: var(--white); border: none; padding: 12px 24px; border-radius: 12px; font-weight: 500; cursor: pointer; }
+        .btn-book { background: var(--primary-color); color: var(--white); border: none; padding: 14px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-book:active { transform: scale(0.95); opacity: 0.9; }
 
-        /* --- ВКЛАДКА УСЛУГИ --- */
+        /* Сетка услуг */
         .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .service-card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .service-card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; }
         .service-card img { width: 100%; height: 120px; object-fit: cover; }
         .service-info { padding: 10px; text-align: center; }
         .service-info p { font-size: 14px; font-weight: 500; }
         .service-info span { color: var(--primary-color); font-size: 13px; }
 
-        /* --- ВКЛАДКА ЗАПИСЬ --- */
-        .booking-form { background: var(--white); padding: 20px; border-radius: 20px; }
+        /* Форма записи */
+        .booking-form { background: var(--white); padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; }
         .form-group select, .form-group input { 
-            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; outline: none; font-size: 14px;
+            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; outline: none; font-size: 15px; background: #fff;
         }
 
-        /* --- ВКЛАДКА ПРОФИЛЬ --- */
+        /* Профиль */
         .profile-info { text-align: center; padding-top: 20px; }
-        .avatar { width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
-        .profile-menu { margin-top: 30px; }
-        .menu-item { 
-            background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 10px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .avatar { width: 85px; height: 85px; background: #eee; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 35px; overflow: hidden; }
+        .menu-item { background: var(--white); padding: 18px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
 
         /* Навигация */
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: var(--white);
-            display: flex; justify-content: space-around; padding: 15px 0 25px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-around; padding: 12px 0 28px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
         }
-        .nav-btn { text-align: center; color: #ccc; font-size: 10px; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-btn { text-align: center; color: #bbb; font-size: 10px; cursor: pointer; flex: 1; transition: 0.3s; }
         .nav-btn.active { color: var(--primary-color); }
-        .nav-btn i { display: block; font-size: 22px; margin-bottom: 4px; font-style: normal; }
+        .nav-btn i { display: block; font-size: 24px; margin-bottom: 4px; font-style: normal; }
     </style>
 </head>
 <body>
@@ -95,11 +92,11 @@
             
             <h2 class="section-title">Популярное</h2>
             <div class="services-grid">
-                <div class="service-card" onclick="selectService('Маникюр', 1500)">
+                <div class="service-card" onclick="selectService('Маникюр')">
                     <img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=300&q=80">
                     <div class="service-info"><p>Маникюр</p><span>от 1500₽</span></div>
                 </div>
-                <div class="service-card" onclick="selectService('Укладка', 2000)">
+                <div class="service-card" onclick="selectService('Укладка')">
                     <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=300&q=80">
                     <div class="service-info"><p>Укладка</p><span>от 2000₽</span></div>
                 </div>
@@ -111,22 +108,19 @@
         <div class="container">
             <h2 class="section-title">Все услуги</h2>
             <div class="services-grid">
-                <div class="service-card" onclick="selectService('Косметология', 3500)">
+                <div class="service-card" onclick="selectService('Косметология')">
                     <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=300&q=80">
                     <div class="service-info"><p>Косметология</p><span>от 3500₽</span></div>
                 </div>
-                <div class="service-card" onclick="selectService('Брови', 1200)">
-                    <img src="https://m.salon-paradis.by/content/brows-lami-pmu/eyebrows/brow-master.jpg" alt="Брови" style="object-fit: cover;">
-                    <div class="service-info">
-                        <p>Брови</p>
-                        <span>от 1200₽</span>
-                    </div>
+                <div class="service-card" onclick="selectService('Брови')">
+                    <img src="https://images.pexels.com/photos/4621424/pexels-photo-4621424.jpeg?auto=compress&cs=tinysrgb&w=300">
+                    <div class="service-info"><p>Брови</p><span>от 1200₽</span></div>
                 </div>
-                <div class="service-card" onclick="selectService('Педикюр', 2200)">
+                <div class="service-card" onclick="selectService('Педикюр')">
                     <img src="https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=300&q=80">
                     <div class="service-info"><p>Педикюр</p><span>от 2200₽</span></div>
                 </div>
-                <div class="service-card" onclick="selectService('Макияж', 3000)">
+                <div class="service-card" onclick="selectService('Макияж')">
                     <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=300&q=80">
                     <div class="service-info"><p>Макияж</p><span>от 3000₽</span></div>
                 </div>
@@ -145,6 +139,8 @@
                         <option value="Укладка">Укладка</option>
                         <option value="Косметология">Косметология</option>
                         <option value="Брови">Брови</option>
+                        <option value="Педикюр">Педикюр</option>
+                        <option value="Макияж">Макияж</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -173,8 +169,7 @@
             </div>
             <div class="profile-menu">
                 <div class="menu-item"><span>🎁 Мои бонусы</span><span style="color: var(--primary-color)">500 Б</span></div>
-                <div class="menu-item"><span>📅 История визитов</span><span>></span></div>
-                <div class="menu-item"><span>⚙️ Настройки</span><span>></span></div>
+                <div class="menu-item"><span>📅 История визитов</span><span>❯</span></div>
                 <div class="menu-item" style="color: #e74c3c;"><span>Выйти</span></div>
             </div>
         </div>
@@ -188,137 +183,67 @@
     </div>
 
     <script>
-   // 1. Инициализация Telegram WebApp
-const tg = window.Telegram.WebApp;
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
 
-// Сообщаем Telegram, что приложение готово и его можно показывать
-tg.ready();
-// Разворачиваем на максимум
-tg.expand();
-
-// Устанавливаем цвета основной кнопки (опционально)
-tg.MainButton.setParams({
-    text_color: '#ffffff',
-    color: '#D5A3A3'
-});
-
-// 2. Ждем загрузки интерфейса (DOM)
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Serevko App initialized");
-    
-    // Подтягиваем данные пользователя из Telegram
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const user = tg.initDataUnsafe.user;
-        const userNameElem = document.getElementById('user-name');
-        const userIdElem = document.getElementById('user-id');
-        const userAvatarElem = document.getElementById('user-avatar');
-
-        if (userNameElem) userNameElem.innerText = user.first_name || "Клиент";
-        if (userIdElem) userIdElem.innerText = "ID: " + (user.id || "000000");
-        
-        // Если у пользователя есть фото в ТГ, пробуем отобразить
-        if (user.photo_url && userAvatarElem) {
-            userAvatarElem.innerHTML = `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+        // Данные юзера
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
+            document.getElementById('user-name').innerText = user.first_name || "Клиент";
+            document.getElementById('user-id').innerText = "ID: " + (user.id || "000000");
+            if (user.photo_url) {
+                document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}" style="width:100%;height:100%;object-fit:cover;">`;
+            }
         }
-    }
-});
 
-/**
- * 3. Функция переключения вкладок (SPA логика)
- * @param {string} pageId - ID блока страницы (home, services, booking, profile)
- * @param {HTMLElement} btn - Элемент кнопки навигации (необязательно)
- */
-function showPage(pageId, btn) {
-    // Скрываем все страницы
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(p => {
-        p.style.display = 'none';
-        p.classList.remove('active');
-    });
+        function showPage(pageId, btn) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => { p.style.display = 'none'; p.classList.remove('active'); });
 
-    // Показываем выбранную страницу
-    const activePage = document.getElementById(pageId);
-    if (activePage) {
-        activePage.style.display = 'block';
-        // Небольшая задержка для запуска CSS-анимации fadeIn
-        setTimeout(() => activePage.classList.add('active'), 10);
-    }
+            const activePage = document.getElementById(pageId);
+            if (activePage) {
+                activePage.style.display = 'block';
+                setTimeout(() => activePage.classList.add('active'), 10);
+            }
 
-    // Снимаем активный класс со всех кнопок меню
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    
-    // Подсвечиваем нужную кнопку
-    if (btn) {
-        // Если нажали на кнопку напрямую
-        btn.classList.add('active');
-    } else {
-        // Если перешли программно (например, кликнули на услугу)
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const pageIndexMap = { 'home': 0, 'services': 1, 'booking': 2, 'profile': 3 };
-        const index = pageIndexMap[pageId];
-        if (navButtons[index]) {
-            navButtons[index].classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if (btn) {
+                btn.classList.add('active');
+            } else {
+                const navButtons = document.querySelectorAll('.nav-btn');
+                const map = { 'home': 0, 'services': 1, 'booking': 2, 'profile': 3 };
+                if (navButtons[map[pageId]]) navButtons[map[pageId]].classList.add('active');
+            }
+            window.scrollTo(0, 0);
+            tg.HapticFeedback.impactOccurred('light');
         }
-    }
 
-    // Всегда прокручиваем вверх при смене вкладки
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+        function selectService(name) {
+            document.getElementById('book-service').value = name;
+            showPage('booking');
+        }
 
-/**
- * 4. Функция выбора конкретной услуги
- */
-function selectService(name, price) {
-    const serviceSelect = document.getElementById('book-service');
-    if (serviceSelect) {
-        serviceSelect.value = name;
-    }
-    // Перекидываем пользователя на страницу бронирования
-    showPage('booking');
-}
+        function confirmBooking() {
+            const service = document.getElementById('book-service').value;
+            const master = document.getElementById('book-master').value;
+            const time = document.getElementById('book-time').value;
 
-/**
- * 5. Логика подтверждения записи
- */
-function confirmBooking() {
-    const service = document.getElementById('book-service').value;
-    const master = document.getElementById('book-master').value;
-    const timeInput = document.getElementById('book-time');
-    const time = timeInput.value;
+            if (!time) {
+                tg.showAlert("Пожалуйста, выберите дату и время!");
+                return;
+            }
 
-    // Валидация: если время не выбрано
-    if (!time) {
-        // Вызываем системное окно Telegram
-        tg.showAlert("Пожалуйста, выберите удобную дату и время!");
-        return;
-    }
+            const data = {
+                action: "new_booking",
+                service: service,
+                master: master,
+                time: time
+            };
 
-    // Собираем данные в объект
-    const resultData = {
-        action: "new_booking",
-        service: service,
-        master: master,
-        time: time,
-        user_id: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "unknown"
-    };
-
-    // Отправляем данные боту (это закроет Mini App)
-    // ВНИМАНИЕ: Работает только если бот запущен через KeyboardButton
-    try {
-        tg.sendData(JSON.stringify(resultData));
-    } catch (error) {
-        console.error("Ошибка sendData:", error);
-        tg.showAlert("Произошла ошибка при отправке данных боту.");
-    }
-}
-
-// Вибрация при кликах (для ощущения "нативного" приложения)
-document.querySelectorAll('.nav-btn, .btn-book, .service-card').forEach(item => {
-    item.addEventListener('click', () => {
-        tg.HapticFeedback.impactOccurred('light');
-    });
-});
+            // Отправка данных боту
+            tg.sendData(JSON.stringify(data));
+        }
     </script>
-     
 </body>
 </html>

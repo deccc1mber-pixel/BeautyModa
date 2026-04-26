@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Serevko Beauty</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* Базовые стили и сброс */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        body { background-color: #FAFAFA; color: #333; -webkit-tap-highlight-color: transparent; }
+        
+        /* Шапка с фоном */
+        .header {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,1)), url('https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=800&q=80') center/cover;
+            padding: 40px 20px 20px;
+            position: relative;
+        }
+        .header h1 { font-weight: 300; letter-spacing: 2px; font-size: 28px; }
+        .header h2 { font-weight: 300; letter-spacing: 4px; font-size: 14px; color: #666; margin-top: 5px; }
+        .header p { font-size: 12px; color: #888; margin-top: 10px; }
+        .bell-icon {
+            position: absolute; top: 40px; right: 20px;
+            background: rgba(255,255,255,0.8); padding: 10px; border-radius: 50%;
+        }
+
+        /* Основной контент */
+        .content { padding: 0 20px 80px; }
+
+        /* Карточка промо (скидка) */
+        .promo-card {
+            background: #fff; border-radius: 16px; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-top: -20px; position: relative; z-index: 10;
+        }
+        .promo-text h3 { font-size: 16px; font-weight: 500; }
+        .promo-text p { font-size: 12px; color: #888; margin-top: 5px; }
+        .btn-primary {
+            background: #D5A3A3; color: white; border: none; padding: 10px 20px;
+            border-radius: 12px; font-size: 14px; cursor: pointer;
+        }
+
+        /* Секция услуг */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 15px; }
+        .section-header h3 { font-size: 20px; font-weight: 500; }
+        .section-header a { font-size: 14px; color: #888; text-decoration: none; }
+        
+        .services-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .services-scroll::-webkit-scrollbar { display: none; }
+        .service-item { min-width: 120px; background: #fff; border-radius: 12px; overflow: hidden; padding-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .service-item img { width: 100%; height: 120px; object-fit: cover; }
+        .service-item p { font-size: 12px; padding: 10px 10px 0; text-align: center; }
+
+        /* Карточка "Приведи подругу" */
+        .referral-card {
+            background: linear-gradient(135deg, #F3E5E5, #EAD5D5); border-radius: 16px;
+            padding: 20px; margin-top: 20px; display: flex; justify-content: space-between;
+        }
+        .referral-card h3 { font-size: 16px; font-weight: 500; margin-bottom: 10px; }
+        .referral-card p { font-size: 12px; color: #666; }
+
+        /* Мои записи */
+        .appointment-card {
+            background: #fff; border-radius: 16px; padding: 15px;
+            display: flex; align-items: center; border: 1px solid #eee; margin-top: 10px;
+        }
+        .app-date { border-right: 1px solid #eee; padding-right: 15px; text-align: center; }
+        .app-date h2 { font-size: 24px; font-weight: 400; }
+        .app-date p { font-size: 12px; color: #888; }
+        .app-details { padding-left: 15px; flex-grow: 1; }
+        .app-details h4 { font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+        .app-details p { font-size: 12px; color: #888; margin-bottom: 5px; }
+        .badge { background: #E5F5E9; color: #32A05F; padding: 4px 8px; border-radius: 6px; font-size: 10px; display: inline-block; }
+
+        /* Нижняя навигация */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #fff;
+            display: flex; justify-content: space-around; padding: 10px 0 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
+        }
+        .nav-item { text-align: center; color: #aaa; font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: #D5A3A3; }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="bell-icon">🔔</div>
+        <h1>SEREVKO</h1>
+        <h2>BEAUTY</h2>
+        <p>Твоя красота — наша работа</p>
+    </div>
+
+    <div class="content">
+        <div class="promo-card">
+            <div class="promo-text">
+                <h3>-10% на первое посещение</h3>
+                <p>Для новых клиентов</p>
+            </div>
+            <button class="btn-primary" onclick="bookAppointment()">Записаться</button>
+        </div>
+
+        <div class="section-header">
+            <h3>Услуги</h3>
+            <a href="#">Все услуги ></a>
+        </div>
+        <div class="services-scroll">
+            <div class="service-item">
+                <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=300&q=80" alt="Косметология">
+                <p>Косметология</p>
+            </div>
+            <div class="service-item">
+                <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=300&q=80" alt="Волосы">
+                <p>Парикмахерские<br>услуги</p>
+            </div>
+            <div class="service-item">
+                <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=300&q=80" alt="Ногти">
+                <p>Ногтевой<br>сервис</p>
+            </div>
+            <div class="service-item">
+                <img src="https://images.unsplash.com/photo-1512496015851-a1fbbfc6d43e?auto=format&fit=crop&w=300&q=80" alt="Брови">
+                <p>Брови и<br>ресницы</p>
+            </div>
+        </div>
+
+        <div class="referral-card">
+            <div>
+                <h3>Приведи подругу<br>и получите бонусы</h3>
+                <p>Подробнее</p>
+            </div>
+            <div style="font-size: 40px;">🎁</div>
+        </div>
+
+        <div class="section-header">
+            <h3>Мои записи</h3>
+            <a href="#">Все записи ></a>
+        </div>
+        <div class="appointment-card">
+            <div class="app-date">
+                <h2>25</h2>
+                <p>мая</p>
+            </div>
+            <div class="app-details">
+                <h4>15:00 • Маникюр + покрытие</h4>
+                <p>Мастер: Анна</p>
+                <div class="badge">Подтверждена</div>
+            </div>
+            <div style="color: #aaa;">></div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active"><span class="nav-icon">🏠</span>Главная</div>
+        <div class="nav-item"><span class="nav-icon">🗂</span>Услуги</div>
+        <div class="nav-item"><span class="nav-icon">📅</span>Запись</div>
+        <div class="nav-item"><span class="nav-icon">👤</span>Профиль</div>
+        <div class="nav-item"><span class="nav-icon">⋯</span>Ещё</div>
+    </div>
+
+    <script>
+        // Инициализация Telegram Web App
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем на весь экран
+
+        // Настраиваем цвета темы под Telegram
+        tg.MainButton.textColor = '#FFFFFF';
+        tg.MainButton.color = '#D5A3A3'; 
+
+        // Функция при нажатии на кнопку "Записаться"
+        function bookAppointment() {
+            // Отправляем данные обратно боту
+            tg.sendData("action_book_new"); 
+            // Либо можно включить главную кнопку Telegram внизу
+            tg.MainButton.setText("Продолжить запись");
+            tg.MainButton.show();
+        }
+
+        Telegram.WebApp.onEvent('mainButtonClicked', function() {
+            tg.sendData("continue_booking");
+        });
+    </script>
+</body>
+</html>
